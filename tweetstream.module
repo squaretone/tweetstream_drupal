@@ -1,0 +1,113 @@
+<?php
+/**
+ * Main module file.
+ */
+
+/**
+ * Implements hoo_menu
+ */
+function tweetstream_menu() {
+  $items = array();
+
+  $items['api/tweetstream/config'] = array(
+    'title' => t('Tweetstream Config'),
+    'description' => t('API endpoint for Tweestream json config info'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'tweetstream_json_config',
+    'file' => 'tweetstream.admin.inc'
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function tweetstream_block_info() {
+  $blocks['tweetstream'] = array(
+    'info' => t('Tweetstream'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function tweetstream_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'tweetstream':
+      $path = drupal_get_path('module', 'tweetstream');
+      $block['subject'] = t('Tweetstream');
+      $block['content'] = array(
+        '#theme' => 'tweetstream',
+        '#attached' => array(
+          'js' => array(
+            'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js',
+            $path . '/tweetstream.js',
+          ),
+        ),
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function tweetstream_block_configure($delta = '') {
+  $form = array();
+  if ($delta == 'tweetstream') {
+    // All we need to provide is the specific configuration options for our
+    // block. Drupal will take care of the standard block configuration options
+    // (block title, page visibility, etc.) and the save button.
+    $form['tweetstream_track'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Track'),
+      '#size' => 60,
+      '#description' => t('A comma-separated list of terms contained in the tweets to search for.'),
+      '#default_value' => variable_get('tweetstream_track',  ''),
+    );
+
+    $form['tweetstream_follow'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Follow'),
+      '#size' => 60,
+      '#description' => t('A comma-separated list of user IDs, indicating the users whose Tweets should be delivered on the stream.'),
+      '#default_value' => variable_get('tweetstream_follow',  ''),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function tweetstream_block_save($delta = '', $edit = array()) {
+  // We need to save settings from the configuration form.
+  // We need to check $delta to make sure we are saving the right block.
+  if ($delta == 'tweetstream') {
+    // Have Drupal save the string to the database.
+    variable_set('tweetstream_track', $edit['tweetstream_track']);
+    variable_set('tweetstream_follow', $edit['tweetstream_follow']);
+  }
+
+  return;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function tweetstream_theme() {
+  return array(
+    'tweetstream' => array(
+      'template' => 'tweetstream',
+      'variables' => array(),
+    ),
+  );
+}

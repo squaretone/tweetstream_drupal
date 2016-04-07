@@ -1,0 +1,4 @@
+name = TweetStream
+description = Display streaming tweets in a block
+
+core = 7.x
