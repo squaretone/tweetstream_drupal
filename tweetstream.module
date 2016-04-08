@@ -14,7 +14,8 @@ function tweetstream_menu() {
     'description' => t('API endpoint for Tweestream json config info'),
     'type' => MENU_CALLBACK,
     'page callback' => 'tweetstream_json_config',
-    'file' => 'tweetstream.admin.inc'
+    'file' => 'tweetstream.admin.inc',
+    'access callback' => TRUE
   );
 
   return $items;
