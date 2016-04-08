@@ -45,6 +45,7 @@ function tweetstream_block_view($delta = '') {
         '#theme' => 'tweetstream',
         '#attached' => array(
           'js' => array(
+            'https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js',
             'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js',
             $path . '/tweetstream.js',
           ),
