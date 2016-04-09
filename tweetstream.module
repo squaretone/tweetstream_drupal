@@ -121,6 +121,8 @@ function tweetstream_block_save($delta = '', $edit = array()) {
     // Have Drupal save the string to the database.
     variable_set('tweetstream_track', $edit['tweetstream_track']);
     variable_set('tweetstream_follow', $edit['tweetstream_follow']);
+    variable_set('tweetstream_socketio_url', $edit['tweetstream_socketio_url']);
+    variable_set('tweetstream_app_root', $edit['tweetstream_app_root']);
   }
 
   return;
