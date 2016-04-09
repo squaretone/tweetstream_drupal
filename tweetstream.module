@@ -52,6 +52,14 @@ function tweetstream_block_view($delta = '') {
           ),
         ),
       );
+      // Define settings to pass to Agnular controller.
+      $js_settings = array(
+        'tweetstream' => array(
+          'socketioUrl' => variable_get('tweetstream_socketio_url', 'http://localhost:3000'),
+          'appRoot' => variable_get('tweetstream_doc_root', 'document')
+        ),
+      );
+      drupal_add_js($js_settings, 'setting');
       break;
   }
 
@@ -81,6 +89,22 @@ function tweetstream_block_configure($delta = '') {
       '#size' => 60,
       '#description' => t('A comma-separated list of user IDs, indicating the users whose Tweets should be delivered on the stream.'),
       '#default_value' => variable_get('tweetstream_follow',  ''),
+    );
+
+    $form['tweetstream_soketio_url'] = array(
+      '#type' => 'textfield',
+      '#title' => t('socket.io URL'),
+      '#description' => t('The URL for the socket.io connection.'),
+      '#size' => 60,
+      '#default_value' => variable_get('tweetstream_socketio_url', 'http://localhost:3000')
+    );
+
+    $form['tweetstream_app_root'] = array(
+      '#type' => 'textfield',
+      '#title' => t('App Root'),
+      '#description' => t('The element id used for bootstrapping the Angular app.'),
+      '#size' => 60,
+      '#default_value' => variable_get('tweetstream_app_root', 'document')
     );
   }
 
