@@ -12,12 +12,17 @@ function tweetstream_json_config() {
   // The data is stored in variables. $track is the terms being looked for
   // in the tweets, and $follow is the users whose tweets we want.
   // See https://dev.twitter.com/streaming/overview/request-parameters
-  $track = variable_get('tweetstream_track', '');
+  $track = array_map('trim', explode(',', variable_get('tweetstream_track', '')));
   $follow = variable_get('tweetstream_follow', '');
 
   $data = array(
-    'track' => $track,
-    'follow' => $follow
+    'stream' => array(
+      'path' => 'statuses/filter',
+      'params' => array(
+        'track' => $track,
+        // 'follow' => $follow
+      ),
+    ),
   );
 
   return drupal_json_output($data);
