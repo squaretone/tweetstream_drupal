@@ -4,7 +4,7 @@
   // Angular Controller
   var tweetStreamCtrl = function($scope, tweetStreamSrvc) {
     $scope.tweets = [];
-    $scope.maxTweets = 8;
+    $scope.maxTweets = 5;
 
     // Handle new tweets
     var addTweetHandler = function(tweet) {
