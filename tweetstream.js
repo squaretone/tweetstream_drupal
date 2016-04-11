@@ -24,7 +24,7 @@
 
     var options = {
       // Define a 'server' value if running socket.io on a different server/port
-      // server: 'http://localhost:3000'
+      server: Drupal.settings.tweetstream.socketioUrl,
       onConnectCallback: connectHandler,
       onTweetCallback: addTweetHandler
     };
