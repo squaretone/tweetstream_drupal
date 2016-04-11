@@ -79,8 +79,9 @@
 
   // When DOM is ready, bootstrap our app
   // @TODO: appRoot should be configurable via Drupal config
-  var appRoot = document;//
   angular.element(document).ready(function () {
+    var appRootId = '#' + Drupal.settings.tweetstream.appRoot;
+    var appRoot = angular.element(document.querySelector(appRootId));
     angular.bootstrap(appRoot, ['tweetStream']);
   });
 })();
