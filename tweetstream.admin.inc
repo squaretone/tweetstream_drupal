@@ -20,5 +20,5 @@ function tweetstream_json_config() {
     'follow' => $follow
   );
 
-  return drupal_json_encode($data);
+  return drupal_json_output($data);
 }
