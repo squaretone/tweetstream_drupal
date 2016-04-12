@@ -5,13 +5,17 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var TweeterLib = require('./modules/tweeter');
+var request = require('request');
 
 var port = process.env.PORT || 3000;
+var streamJSONUrl = process.env.STREAMJSONURL || 'http://localhost:' + port + '/default-stream-config.json';
 var stream, tweeter;
 
 // @TODO: Make these configurable
-var streamPath = 'statuses/filter';
-var streamParams = { track: ['javascript', 'angularjs', 'jquery', 'nodejs', 'socketio'] };
+//var streamPath = 'statuses/filter';
+//var streamParams = { track: ['javascript', 'angularjs', 'jquery', 'nodejs', 'socketio'] };
+var streamPath;
+var streamParams;
 
 // Initialize the twitter library
 var tweeter = TweeterLib({
@@ -24,23 +28,62 @@ var tweeter = TweeterLib({
 app.use(express.static(__dirname + '/public'));
 app.use(express.static(__dirname + '/bower_components'));
 
-// Returns active stream to callback
-// Initializes a new stream if it doesn't exist
+/**
+ * Fetch a JSON object with stream config data
+ * @param  {string}   JSONUrl URL to fetch JSON filter
+ * @param  {Function} cb      Pass results to this Function
+ */
+var loadStreamConfig = function(JSONUrl, cb) {
+  request(JSONUrl, function (err, res, body) {
+    if (!err && res.statusCode == 200) {
+      var configJSON;
+      try {
+        configJSON = JSON.parse(body);
+        cb(null, configJSON);
+      } catch(err) {
+        cb(err);
+      }
+    } else {
+      var returnError = (!err) ? res.statusCode : err;
+      cb(returnError);
+    }
+  })
+};
+
+// Returns active stream to callback.
+// Initializes a new stream if it doesn't exist.
 var getTwitterStream = function(cb) {
   if (stream) {
     // Return active Twitter stream if it exists
     cb(null, stream);
   } else {
-    // Create it and then return it
-    tweeter.createStream(streamPath, streamParams, function(err, newStream) {
-      // Save a reference
-      stream = newStream;
-      cb(err, newStream);
-    });
+    // Fetch config info from our JSON endpoint
+    loadStreamConfig(streamJSONUrl, function(err, configJSON) {
+      if (!err) {
+        var streamConfig = configJSON.stream;
+        if (streamConfig) {
+          streamPath = streamConfig.path;
+          streamParams = streamConfig.params;
 
-    stream.on('tweet', function(tweet) {
-      console.log('Tweet: [%s]: %s', tweet.id, tweet.user.screen_name);
-      io.emit('tweet', tweet);
+          // Create stream it and pass it to the callback function
+          tweeter.createStream(streamPath, streamParams, function(err, newStream) {
+            // Save a reference
+            stream = newStream;
+            cb(err, newStream);
+
+            // Globally emit new tweets
+            stream.on('tweet', function(tweet) {
+              console.log('Tweet: [%s]: %s', tweet.id, tweet.user.screen_name);
+              io.emit('tweet', tweet);
+            });
+          });
+        } else {
+          console.log('Error parsing: %s', streamJSONUrl);
+        }
+
+      } else {
+        console.log('Error with config file: %s', streamJSONUrl);
+      }
     });
   }
 };
