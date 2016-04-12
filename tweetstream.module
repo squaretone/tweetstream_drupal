@@ -56,7 +56,7 @@ function tweetstream_block_view($delta = '') {
       $js_settings = array(
         'tweetstream' => array(
           'socketioUrl' => variable_get('tweetstream_socketio_url', 'http://localhost:3000'),
-          'appRoot' => variable_get('tweetstream_doc_root', 'document')
+          'appRoot' => variable_get('tweetstream_app_root', 'document')
         ),
       );
       drupal_add_js($js_settings, 'setting');
@@ -91,7 +91,7 @@ function tweetstream_block_configure($delta = '') {
       '#default_value' => variable_get('tweetstream_follow',  ''),
     );
 
-    $form['tweetstream_soketio_url'] = array(
+    $form['tweetstream_socketio_url'] = array(
       '#type' => 'textfield',
       '#title' => t('socket.io URL'),
       '#description' => t('The URL for the socket.io connection.'),
