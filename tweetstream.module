@@ -41,7 +41,6 @@ function tweetstream_block_view($delta = '') {
   switch ($delta) {
     case 'tweetstream':
       $path = drupal_get_path('module', 'tweetstream');
-      $block['subject'] = t('Tweetstream');
       $block['content'] = array(
         '#theme' => 'tweetstream',
         '#attached' => array(
