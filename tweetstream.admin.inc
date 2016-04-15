@@ -13,14 +13,14 @@ function tweetstream_json_config() {
   // in the tweets, and $follow is the users whose tweets we want.
   // See https://dev.twitter.com/streaming/overview/request-parameters
   $track = array_map('trim', explode(',', variable_get('tweetstream_track', '')));
-  $follow = variable_get('tweetstream_follow', '');
+  $follow = array_map('trim', explode(',', variable_get('tweetstream_follow', '')));
 
   $data = array(
     'stream' => array(
       'path' => 'statuses/filter',
       'params' => array(
         'track' => $track,
-        // 'follow' => $follow
+        'follow' => $follow
       ),
     ),
   );
