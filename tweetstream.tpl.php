@@ -14,6 +14,9 @@
         <h5 class="media-heading">{{ tweet.name }} <small>{{ tweet.username }}</small></h5>
         {{ tweet.text }}
       </div>
+      <div ng-repeat="item in tweet.media">
+        <img src="{{ item.url }}" width="{{ item.width }}" height="{{ item.height }}"/>
+      </div>
     </div>
   </div>
 </div>

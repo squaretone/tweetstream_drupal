@@ -39,6 +39,20 @@
       tweet.username = tweetRaw.user.screen_name;
       tweet.profileImg = tweetRaw.user.profile_image_url_https;
       tweet.text = tweetRaw.text;
+      // Loop through extended_media to get photos and videos.
+      tweet.media = [];
+      if (typeof tweetRaw.extended_entities !== 'undefined') {
+        var tweetMedia = tweetRaw.extended_entities;
+        var mediaLength = tweetMedia.media.length;
+        for (i = 0; i < mediaLength; i++) {
+          var media = {
+            url: tweetMedia['media'][i]['media_url'],
+            width: tweetMedia['media'][i]['sizes']['thumb']['w'],
+            height: tweetMedia['media'][i]['sizes']['thumb']['h']
+          };
+          tweet.media.push(media);
+        }
+      }
       return tweet;
     };
     var srvc = {
