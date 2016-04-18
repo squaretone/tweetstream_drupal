@@ -55,7 +55,8 @@ function tweetstream_block_view($delta = '') {
       $js_settings = array(
         'tweetstream' => array(
           'socketioUrl' => variable_get('tweetstream_socketio_url', 'http://localhost:3000'),
-          'appRoot' => variable_get('tweetstream_app_root', 'document')
+          'appRoot' => variable_get('tweetstream_app_root', 'document'),
+          'numTweets' => variable_get('tweetstream_num_tweets', 3),
         ),
       );
       drupal_add_js($js_settings, 'setting');
@@ -74,6 +75,14 @@ function tweetstream_block_configure($delta = '') {
     // All we need to provide is the specific configuration options for our
     // block. Drupal will take care of the standard block configuration options
     // (block title, page visibility, etc.) and the save button.
+    $form['tweetstream_num_tweets'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Number of tweets to display'),
+      '#size' => 2,
+      '#description' => t('The number of tweets to display in the block..'),
+      '#default_value' => variable_get('tweetstream_num_tweets',  ''),
+    );
+
     $form['tweetstream_track'] = array(
       '#type' => 'textfield',
       '#title' => t('Track'),
@@ -122,6 +131,7 @@ function tweetstream_block_save($delta = '', $edit = array()) {
     variable_set('tweetstream_follow', $edit['tweetstream_follow']);
     variable_set('tweetstream_socketio_url', $edit['tweetstream_socketio_url']);
     variable_set('tweetstream_app_root', $edit['tweetstream_app_root']);
+    variable_set('tweetstream_num_tweets', $edit['tweetstream_num_tweets']);
   }
 
   return;
