@@ -4,7 +4,7 @@
  */
 
 /**
- * Implements hoo_menu
+ * Implements hook_menu()
  */
 function tweetstream_menu() {
   $items = array();
@@ -22,7 +22,7 @@ function tweetstream_menu() {
 }
 
 /**
- * Implements hook_block_info().
+ * Implements hook_block_info()
  */
 function tweetstream_block_info() {
   $blocks['tweetstream'] = array(
@@ -33,7 +33,7 @@ function tweetstream_block_info() {
 }
 
 /**
- * Implements hook_block_view().
+ * Implements hook_block_view()
  */
 function tweetstream_block_view($delta = '') {
   $block = array();
@@ -67,7 +67,7 @@ function tweetstream_block_view($delta = '') {
 }
 
 /**
- * Implements hook_block_configure().
+ * Implements hook_block_configure()
  */
 function tweetstream_block_configure($delta = '') {
   $form = array();
@@ -120,7 +120,7 @@ function tweetstream_block_configure($delta = '') {
 }
 
 /**
- * Implements hook_block_save().
+ * Implements hook_block_save()
  */
 function tweetstream_block_save($delta = '', $edit = array()) {
   // We need to save settings from the configuration form.
@@ -138,7 +138,7 @@ function tweetstream_block_save($delta = '', $edit = array()) {
 }
 
 /**
- * Implements hook_theme().
+ * Implements hook_theme()
  */
 function tweetstream_theme() {
   return array(
