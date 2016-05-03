@@ -3,7 +3,7 @@
 
   // Angular Controller
   var tweetStreamCtrl = function($scope, tweetStreamSrvc) {
-    $scope.tweets = [];
+    $scope.tweets = [{a:1}, {b:2}];
     $scope.maxTweets = Drupal.settings.tweetstream.numTweets;
 
     // Handle new tweets
@@ -61,13 +61,17 @@
     srvc.init = function(options) {
       var server = options.server;
       var socket = io.connect(server);
-
+      console.log('set up listeners');
+      socket.on('connect', function() {
+        console.log('connect',arguments);
+      });
       // Pass config back to Controller
       socket.on('config', function (config) {
         console.log('config', config);
         var trimmedPrime = config.prime.reverse();
         if (options.onConnectCallback) {
           var cleanedTweets = trimmedPrime.map(cleanTweet);
+          console.log('cleanedTweets',cleanedTweets);
           options.onConnectCallback({
             starterTweets: cleanedTweets
           });
@@ -94,8 +98,10 @@
   // When DOM is ready, bootstrap our app
   // @TODO: appRoot should be configurable via Drupal config
   angular.element(document).ready(function () {
-    var appRootId = '#' + Drupal.settings.tweetstream.appRoot;
-    var appRoot = angular.element(document.querySelector(appRootId));
-    angular.bootstrap(appRoot, ['tweetStream']);
+    var appRootSelector= Drupal.settings.tweetstream.appRoot;
+    console.log('appRootSelector', appRootSelector);
+    var appRoot = angular.element(document.querySelector(appRootSelector));
+    console.log('appRoot', appRoot);
+    angular.bootstrap(document, ['tweetStream']);
   });
 })();

@@ -40,26 +40,45 @@ function tweetstream_block_view($delta = '') {
 
   switch ($delta) {
     case 'tweetstream':
-      $path = drupal_get_path('module', 'tweetstream');
-      $block['content'] = array(
-        '#theme' => 'tweetstream',
-        '#attached' => array(
-          'js' => array(
-            'https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.5/socket.io.js',
-            'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js',
-            $path . '/tweetstream.js',
+      $tweetstreamURL = variable_get('tweetstream_socketio_url');
+      if ($tweetstreamURL) {
+        // Only show normal block if url is set
+        $path = drupal_get_path('module', 'tweetstream');
+        $socketIOLibraryURL = url($tweetstreamURL . '/socket.io/socket.io.js', array('external' => TRUE));
+        $block['content'] = array(
+          '#theme' => 'tweetstream',
+          '#attached' => array(
+            'js' => array(
+              $socketIOLibraryURL,
+              'https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js',
+              $path . '/tweetstream.js',
+            ),
           ),
-        ),
-      );
-      // Define settings to pass to Agnular controller.
-      $js_settings = array(
-        'tweetstream' => array(
-          'socketioUrl' => variable_get('tweetstream_socketio_url', 'http://localhost:3000'),
-          'appRoot' => variable_get('tweetstream_app_root', 'document'),
-          'numTweets' => variable_get('tweetstream_num_tweets', 3),
-        ),
-      );
-      drupal_add_js($js_settings, 'setting');
+        );
+        // Define settings to pass to Agnular controller.
+        $js_settings = array(
+          'tweetstream' => array(
+            'socketioUrl' => variable_get('tweetstream_socketio_url'),
+            'appRoot' => '.block-tweetstream .content',//variable_get('tweetstream_app_root', '.block-tweetstream .content'),
+            'numTweets' => variable_get('tweetstream_num_tweets', 3),
+          ),
+        );
+        drupal_add_js($js_settings, 'setting');
+      } elseif (user_access('administer blocks')) {
+        // Let let user with 'administer blocks' permission know that block needs configured
+        $configURL = 'admin/structure/block/manage/tweetstream/tweetstream/configure';
+        $optArray = array(
+          '!url' => l( t('Tweetstream block'),
+            $configURL,
+            array( 'query' => array('destination' => current_path() ))
+          )
+        );
+        $adminMsg = t(
+          '!url needs a socket.io URL before it can display',
+          $optArray
+        );
+        drupal_set_message($adminMsg, 'warning');
+      }
       break;
   }
 
@@ -112,7 +131,7 @@ function tweetstream_block_configure($delta = '') {
       '#title' => t('App Root'),
       '#description' => t('The element id used for bootstrapping the Angular app.'),
       '#size' => 60,
-      '#default_value' => variable_get('tweetstream_app_root', 'document')
+      '#default_value' => variable_get('tweetstream_app_root')
     );
   }
 
