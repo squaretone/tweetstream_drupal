@@ -4,7 +4,7 @@
   // Angular Controller
   var tweetStreamCtrl = function($scope, tweetStreamSrvc) {
     $scope.tweets = [{a:1}, {b:2}];
-    $scope.maxTweets = Drupal.settings.tweetstream.numTweets;
+    $scope.maxTweets = Drupal.settings.tweetstream.numTweets || 3;
 
     // Handle new tweets
     var addTweetHandler = function(tweet) {
