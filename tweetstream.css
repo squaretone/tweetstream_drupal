@@ -6,12 +6,48 @@
 .tweetstream-default a.pause-stream {
   display: inline-block;
   position: absolute;
-  left: 0;
-  top: 0;
+  right: 0;
+  top: -1.5em;
   padding: 3px 8px;
   background: #444;
   color: #fff;
   font-family: sans-serif;
   cursor: pointer;
   font-size: 0.8em;
+}
+
+.tweetstream-default .tweetstream-tweets .tweet-wrapper {
+  padding-bottom: 0.5em;
+  margin-bottom: 0.5em;
+  border-bottom: 1px dotted #ccc;
+}
+
+.tweetstream-default .tweetstream-tweets .tweet {
+  display: table;
+  width: 100%;
+}
+
+.tweetstream-default .tweetstream-tweets .tweet .media-heading {
+  font-weight: bold;
+}
+
+.tweetstream-default .tweetstream-tweets .tweet .media-heading small {
+  color: #888;
+  font-style: oblique;
+  font-weight: normal;
+  padding-left: 0.5em;
+}
+
+.tweetstream-default .tweetstream-tweets .tweet .twitter-profile-image {
+  padding-top: 0.3em;
+  width: 1em;
+}
+.tweetstream-default .tweetstream-tweets .tweet .media-left,
+.tweetstream-default .tweetstream-tweets .tweet .media-body {
+  display: table-cell;
+  vertical-align: top;
+}
+
+.tweetstream-default .tweetstream-tweets .tweet .media-left {
+  padding-right: 0.5em;
 }
