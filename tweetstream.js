@@ -109,9 +109,9 @@
   // @TODO: appRoot should be configurable via Drupal config
   angular.element(document).ready(function () {
     debugMode = Drupal.settings.tweetstream.debug;
-    tweetLog('Angular.js using app root: %s', appRoot);
     var appRootSelector = Drupal.settings.tweetstream.appRoot;
     var appRoot = angular.element(document.querySelector(appRootSelector));
+    tweetLog('Angular.js using app root: %s', appRootSelector);
     angular.bootstrap(document, ['tweetStream']);
   });
 })();
