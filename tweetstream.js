@@ -1,5 +1,15 @@
 (function() {
   var app = angular.module('tweetStream', []);
+  var debugMode = false;
+
+  /**
+   * Custom console.log function that only runs if debug mode is enabled
+   */
+  var tweetLog = function() {
+    if (debugMode) {
+      console.log.apply(console, arguments);
+    }
+  };
 
   // Angular Controller
   var tweetStreamCtrl = function($scope, tweetStreamSrvc) {
@@ -8,7 +18,7 @@
 
     // Handle new tweets
     var addTweetHandler = function(tweet) {
-      console.log('new tweet', tweet);
+      tweetLog('TWEET:', tweet);
       $scope.tweets.unshift(tweet);
       // trim to size
       $scope.tweets = $scope.tweets.slice(0, $scope.maxTweets);
@@ -61,17 +71,17 @@
     srvc.init = function(options) {
       var server = options.server;
       var socket = io.connect(server);
-      console.log('set up listeners');
+      tweetLog('Seting up Socket.io listeners');
       socket.on('connect', function() {
-        console.log('connect',arguments);
+        tweetLog('connect',arguments);
       });
       // Pass config back to Controller
       socket.on('config', function (config) {
-        console.log('config', config);
+        tweetLog('config', config);
         var trimmedPrime = config.prime.reverse();
         if (options.onConnectCallback) {
           var cleanedTweets = trimmedPrime.map(cleanTweet);
-          console.log('cleanedTweets',cleanedTweets);
+          tweetLog('cleanedTweets',cleanedTweets);
           options.onConnectCallback({
             starterTweets: cleanedTweets
           });
@@ -98,10 +108,10 @@
   // When DOM is ready, bootstrap our app
   // @TODO: appRoot should be configurable via Drupal config
   angular.element(document).ready(function () {
-    var appRootSelector= Drupal.settings.tweetstream.appRoot;
-    console.log('appRootSelector', appRootSelector);
+    debugMode = Drupal.settings.tweetstream.debug;
+    tweetLog('Angular.js using app root: %s', appRoot);
+    var appRootSelector = Drupal.settings.tweetstream.appRoot;
     var appRoot = angular.element(document.querySelector(appRootSelector));
-    console.log('appRoot', appRoot);
     angular.bootstrap(document, ['tweetStream']);
   });
 })();

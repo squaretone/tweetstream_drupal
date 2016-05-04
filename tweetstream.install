@@ -13,4 +13,5 @@ function tweetstream_uninstall() {
   variable_del('tweetstream_socketio_url');
   variable_del('tweetstream_app_root');
   variable_del('tweetstream_num_tweets');
+  variable_del('tweetstream_js_debug');
 }

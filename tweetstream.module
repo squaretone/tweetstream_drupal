@@ -56,11 +56,16 @@ function tweetstream_block_view($delta = '') {
           ),
         );
         // Define settings to pass to Agnular controller.
+        $defaultAppRoot = '#block-tweetstream-' . $delta .' .content';
+        $appRoot = trim(variable_get('tweetstream_app_root', $defaultAppRoot));
+        if (strlen($appRoot < 2)) $appRoot = $defaultAppRoot;
+
         $js_settings = array(
           'tweetstream' => array(
             'socketioUrl' => variable_get('tweetstream_socketio_url'),
-            'appRoot' => '.block-tweetstream .content',//variable_get('tweetstream_app_root', '.block-tweetstream .content'),
-            'numTweets' => variable_get('tweetstream_num_tweets', 3),
+            'appRoot' => $appRoot,
+            'numTweets' => variable_get('tweetstream_num_tweets', 5),
+            'debug' => variable_get('tweetstream_js_debug', 0),
           ),
         );
         drupal_add_js($js_settings, 'setting');
@@ -91,15 +96,29 @@ function tweetstream_block_view($delta = '') {
 function tweetstream_block_configure($delta = '') {
   $form = array();
   if ($delta == 'tweetstream') {
-    // All we need to provide is the specific configuration options for our
-    // block. Drupal will take care of the standard block configuration options
-    // (block title, page visibility, etc.) and the save button.
+    $form['tweetstream_socketio_url'] = array(
+      '#type' => 'textfield',
+      '#required' => true,
+      '#title' => t('Socket.io URL'),
+      '#description' => t('The URL of your Node.js Socket.io server'),
+      '#size' => 60,
+      '#default_value' => variable_get('tweetstream_socketio_url')
+    );
+
+    $form['tweetstream_js_debug'] = array(
+      '#type' => 'radios',
+      '#title' => t('JavaScript Debugging'),
+      '#default_value' => variable_get('tweetstream_js_debug', 0),
+      '#options' => array(0 => t('Disabled'), 1 => t('Enabled')),
+      '#description' => t('Instructs JavaScript to log additional information (like incoming tweets) using console.log function. Useful for theming. Disable for production.'),
+    );
+
     $form['tweetstream_num_tweets'] = array(
       '#type' => 'textfield',
       '#title' => t('Number of tweets to display'),
       '#size' => 2,
       '#description' => t('The number of tweets to display in the block..'),
-      '#default_value' => variable_get('tweetstream_num_tweets',  ''),
+      '#default_value' => variable_get('tweetstream_num_tweets',  5),
     );
 
     $form['tweetstream_track'] = array(
@@ -118,21 +137,14 @@ function tweetstream_block_configure($delta = '') {
       '#default_value' => variable_get('tweetstream_follow',  ''),
     );
 
-    $form['tweetstream_socketio_url'] = array(
-      '#type' => 'textfield',
-      '#title' => t('socket.io URL'),
-      '#description' => t('The URL for the socket.io connection.'),
-      '#size' => 60,
-      '#default_value' => variable_get('tweetstream_socketio_url', 'http://localhost:3000')
-    );
-
     $form['tweetstream_app_root'] = array(
       '#type' => 'textfield',
-      '#title' => t('App Root'),
-      '#description' => t('The element id used for bootstrapping the Angular app.'),
+      '#title' => t('Override Angular Root'),
+      '#description' => t('By default, Tweetstream targets the #block-tweetstream-tweetstream .content div but you can override it here.'),
       '#size' => 60,
       '#default_value' => variable_get('tweetstream_app_root')
     );
+
   }
 
   return $form;
@@ -146,11 +158,12 @@ function tweetstream_block_save($delta = '', $edit = array()) {
   // We need to check $delta to make sure we are saving the right block.
   if ($delta == 'tweetstream') {
     // Have Drupal save the string to the database.
+    variable_set('tweetstream_socketio_url', $edit['tweetstream_socketio_url']);
+    variable_set('tweetstream_js_debug', intval( $edit['tweetstream_js_debug'] ));
+    variable_set('tweetstream_num_tweets', $edit['tweetstream_num_tweets']);
     variable_set('tweetstream_track', $edit['tweetstream_track']);
     variable_set('tweetstream_follow', $edit['tweetstream_follow']);
-    variable_set('tweetstream_socketio_url', $edit['tweetstream_socketio_url']);
     variable_set('tweetstream_app_root', $edit['tweetstream_app_root']);
-    variable_set('tweetstream_num_tweets', $edit['tweetstream_num_tweets']);
   }
 
   return;
