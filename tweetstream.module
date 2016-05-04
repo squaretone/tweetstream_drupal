@@ -167,6 +167,29 @@ function tweetstream_block_save($delta = '', $edit = array()) {
     variable_set('tweetstream_track', $edit['tweetstream_track']);
     variable_set('tweetstream_follow', $edit['tweetstream_follow']);
     variable_set('tweetstream_app_root', $edit['tweetstream_app_root']);
+    variable_set('tweetstream_app_root', $edit['tweetstream_app_root']);
+  }
+
+  // If defined, ping the server and let it know to update settings
+  $serverURL = trim(variable_get('tweetstream_socketio_url'));
+  $serverEndpoint = $serverURL . '/refresh-settings';
+  if ($serverURL && strlen($serverURL) > 5) {
+    $options = array(
+      'method' => 'POST',
+      'headers' => array()
+    );
+    $request = drupal_http_request( $serverEndpoint , $options);
+    if ($request->error) {
+      $details = array(
+        '!url' => l( $serverEndpoint,
+          $serverEndpoint,
+          array( 'external' => TRUE)
+        ),
+        '@err' => $request->error
+      );
+      drupal_set_message(t('<b>Error updating the TweetStream server:</b> !url', $details), 'error');
+      drupal_set_message(t('<b>TweetStream update error:</b> @err', $details), 'error');
+    }
   }
 
   return;
