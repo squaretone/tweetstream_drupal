@@ -179,7 +179,7 @@ function tweetstream_block_save($delta = '', $edit = array()) {
       'headers' => array()
     );
     $request = drupal_http_request( $serverEndpoint , $options);
-    if ($request->error) {
+    if (isset($request->error)) {
       $details = array(
         '!url' => l( $serverEndpoint,
           $serverEndpoint,
