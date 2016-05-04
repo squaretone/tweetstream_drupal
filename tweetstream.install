@@ -1,0 +1,16 @@
+<?php
+/**
+ * Included for install/uninstall
+ */
+
+/**
+ * Implements hook_uninstall()
+ */
+function tweetstream_uninstall() {
+  // Delete all set variables
+  variable_del('tweetstream_track');
+  variable_del('tweetstream_follow');
+  variable_del('tweetstream_socketio_url');
+  variable_del('tweetstream_app_root');
+  variable_del('tweetstream_num_tweets');
+}
