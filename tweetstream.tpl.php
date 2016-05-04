@@ -4,7 +4,8 @@
  * AngularJS template to render a weather block.
  */
 ?>
-<div ng-controller="tweetStreamCtrl">
+<div ng-controller="tweetStreamCtrl" class="tweetstream-default">
+  <a class="pause-stream" ng-click="toggleStream()" ng-show="debugMode">{{ pauseText }}</a>
   <div class="messages" ng-repeat="tweet in tweets">
     <div class="tweet media">
       <div class="media-left">

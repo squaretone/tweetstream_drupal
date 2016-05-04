@@ -13,8 +13,17 @@
 
   // Angular Controller
   var tweetStreamCtrl = function($scope, tweetStreamSrvc) {
+    $scope.paused = false;
+    $scope.pauseText = 'Pause';
     $scope.tweets = [{a:1}, {b:2}];
+    $scope.debugMode = debugMode;
     $scope.maxTweets = Drupal.settings.tweetstream.numTweets || 3;
+
+    // Pause/resume rendering of tweets
+    $scope.toggleStream  = function() {
+      $scope.paused = !$scope.paused;
+      $scope.pauseText = ($scope.paused) ? 'Continue' : 'Pause';
+    };
 
     // Handle new tweets
     var addTweetHandler = function(tweet) {
@@ -22,7 +31,9 @@
       $scope.tweets.unshift(tweet);
       // trim to size
       $scope.tweets = $scope.tweets.slice(0, $scope.maxTweets);
-      $scope.$apply();
+      if (!$scope.paused) {
+        $scope.$apply();
+      }
     };
 
     // Handle connection info

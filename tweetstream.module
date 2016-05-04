@@ -44,6 +44,9 @@ function tweetstream_block_view($delta = '') {
       if ($tweetstreamURL) {
         // Only show normal block if url is set
         $path = drupal_get_path('module', 'tweetstream');
+        // Add default CSS
+        drupal_add_css($path . '/tweetstream.css');
+
         $socketIOLibraryURL = url($tweetstreamURL . '/socket.io/socket.io.js', array('external' => TRUE));
         $block['content'] = array(
           '#theme' => 'tweetstream',

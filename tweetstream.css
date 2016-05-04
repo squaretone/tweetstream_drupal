@@ -1,0 +1,17 @@
+/**
+ * Bare-minimum default TweetStream CSS markup
+ * Remove the 'tweetstream-default' from your template to ignore
+ */
+
+.tweetstream-default a.pause-stream {
+  display: inline-block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 3px 8px;
+  background: #444;
+  color: #fff;
+  font-family: sans-serif;
+  cursor: pointer;
+  font-size: 0.8em;
+}
